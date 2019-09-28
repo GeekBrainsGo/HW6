@@ -10,3 +10,5 @@
 https://godoc.org/gopkg.in/mgo.v2
 
 Этот драйвер проще и поддерживает множественные операции.
+
+Здесь GUI для работы с Mongo: https://www.mongodb.com/products/compass
