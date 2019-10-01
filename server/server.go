@@ -65,13 +65,13 @@ func (serv *Server) Start(addr string) error {
 func (serv *Server) bindRoutes(r *chi.Mux) {
 	r.Route("/", func(r chi.Router) {
 		r.Get("/", serv.getTemplateHandler)
-		// r.Route("/api/v1", func(r chi.Router) {
-		// 	r.Put("/blog/{id}", serv.putBlogHandler)
-		// 	r.Get("/blog/{id}", serv.editBlogHandler)
-		// 	r.Post("/blog", serv.addBlogHandler)
-		// 	r.Get("/blog", serv.addGetBlogHandler)
-		// 	r.Delete("/blog/{id}", serv.deleteBlogHandler)
-		// })
+		r.Route("/api/v1", func(r chi.Router) {
+			// 	r.Put("/blog/{id}", serv.putBlogHandler)
+			r.Get("/blog/{id}", serv.editBlogHandler)
+			// 	r.Post("/blog", serv.addBlogHandler)
+			// 	r.Get("/blog", serv.addGetBlogHandler)
+			// 	r.Delete("/blog/{id}", serv.deleteBlogHandler)
+		})
 	})
 }
 
