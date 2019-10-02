@@ -1,0 +1,38 @@
+{{define "title"}}{{.Title}}{{end}}
+
+{{define "content"}}
+<div class="uk-card uk-card-default uk-card-body">
+    {{template "blog" .}}
+    <div class="uk-card uk-card-default uk-card-body">
+        <span>Всего статей: {{len .Data}}</span>
+    </div>
+</div>
+{{end}}
+
+{{define "blog"}}
+<div class="uk-card uk-card-body">
+    <ul class="uk-list">
+        {{range $key, $val := .Data}}            
+            <li>
+                <div class="uk-inline">
+                    <a href="/api/v1/blog/{{$val.ID}}" uk-icon="icon: file-edit"></a>
+                    <a href="#" uk-icon="icon: trash" onclick="deleteTask('{{$val.ID}}')"></a>
+                    <a class="uk-button uk-button-default" href="/api/v1/{{$val.ID}}">{{$val.Title}}</a>
+                </div>                
+            </li>
+        {{end}}
+    </ul>
+</div>
+{{end}}
+
+{{define "scripts"}}
+<script>
+function deleteTask(id) {
+    alert(id);
+    fetch(`/api/v1/blog/${id}`, {method: 'DELETE'})
+        .then(resp => {
+            location.reload()
+        })
+}
+</script>
+{{end}}
