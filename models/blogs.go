@@ -45,24 +45,33 @@ func GetAllBlogs(ctx context.Context, db *mongo.Database) ([]Blog, error) {
 	return blogs, nil
 }
 
+// AddBlog - добавляет блог в БД
+func (blog *Blog) AddBlog(ctx context.Context, db *mongo.Database) error {
+
+	col := db.Collection(blog.GetMongoCollectionName())
+	_, err := col.InsertOne(ctx, blog)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// Delete - удалят блог из базы
+func (blog *Blog) Delete(ctx context.Context, db *mongo.Database) error {
+
+	col := db.Collection(blog.GetMongoCollectionName())
+	_, err := col.DeleteOne(ctx, bson.M{"_id": blog.ID})
+
+	return err
+}
+
 // GetBlog - получение всех блогов
-func GetBlog(ctx context.Context, db *mongo.Database, id string) (*Blog, error) {
-
-	// blog := Blog{}
-
-	// // Get record with primary key (only works for integer primary key)
-	// db.First(&blog, id)
-
-	// return blog, nil
+func GetBlog(ctx context.Context, db *mongo.Database, id primitive.ObjectID) (*Blog, error) {
 
 	blog := Blog{}
 	col := db.Collection(blog.GetMongoCollectionName())
-	blogID, err := primitive.ObjectIDFromHex(id)
-	if err != nil {
-		return nil, err
-	}
 
-	res := col.FindOne(ctx, bson.M{"_id": blogID})
+	res := col.FindOne(ctx, bson.M{"_id": id})
 	if err := res.Decode(&blog); err != nil {
 		return nil, err
 	}
@@ -70,26 +79,10 @@ func GetBlog(ctx context.Context, db *mongo.Database, id string) (*Blog, error) 
 
 }
 
-// // AddBlog - обновляет объект в БД
-// func (blog *Blog) AddBlog(db *gorm.DB) error {
+// UpdateBlog - обновляет объект в БД
+func (blog *Blog) UpdateBlog(ctx context.Context, db *mongo.Database) error {
 
-// 	db.Create(&blog)
-
-// 	return nil
-// }
-
-// // UpdateBlog - обновляет объект в БД
-// func (blog *Blog) UpdateBlog(db *gorm.DB) error {
-
-// 	db.Save(&blog)
-
-// 	return nil
-// }
-
-// // Delete - удалят объект из базы
-// func (blog *Blog) Delete(db *gorm.DB) error {
-
-// 	// soft deleted
-// 	db.Delete(&blog) // UPDATE Blogs SET deleted_at="2013-10-29 10:23" WHERE id = NUM;
-// 	return nil
-// }
+	col := db.Collection(blog.GetMongoCollectionName())
+	_, err := col.ReplaceOne(ctx, bson.M{"_id": blog.ID}, blog)
+	return err
+}

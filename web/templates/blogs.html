@@ -28,6 +28,7 @@
 {{define "scripts"}}
 <script>
 function deleteTask(id) {
+    alert(id);
     fetch(`/api/v1/blog/${id}`, {method: 'DELETE'})
         .then(resp => {
             location.reload()
