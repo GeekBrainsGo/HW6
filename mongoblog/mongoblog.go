@@ -7,9 +7,9 @@ package main
 */
 
 import (
+	"HW6/mongoblog/server"
 	"context"
 	"flag"
-	"HW6/mongoblog/server"
 	"os"
 	"os/signal"
 
@@ -21,6 +21,7 @@ import (
 func main() {
 	flagRootDir := flag.String("rootdir", "./www", "root dir of the server")
 	flagServAddr := flag.String("addr", "localhost:8080", "server address")
+	flagDBname := flag.String("dbname", "mongoblog", "database name")
 	flag.Parse()
 
 	lg := NewLogger()
@@ -38,7 +39,7 @@ func main() {
 		lg.WithError(err).Fatal("can't ping to db")
 	}
 
-	db := client.Database("mongoblog")
+	db := client.Database(*flagDBname)
 	defer client.Disconnect(context.TODO())
 
 	serv := server.New(lg, *flagRootDir, db)
